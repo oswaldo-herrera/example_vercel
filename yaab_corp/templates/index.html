@@ -1,0 +1,425 @@
+{% extends "partials/layout-vertical.html" %}
+<!---->
+{% load static %}
+<!---->
+{% block title %}Dashboard{% endblock title %}
+<!---->
+{% block extra_css %}
+  <style>
+    .custom-card{
+      border-top-left-radius: 50% !important;
+      border-top-right-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      border-bottom-right-radius: 50% !important;
+
+    }
+  </style>
+
+<!---->
+{% endblock extra_css %}
+<!---->
+{% block topbar %}
+<!---->
+<!---->
+{%include "partials/topbar.html" with pagetitle="YAAB Servicios Financieros"%}
+<!---->
+{% endblock topbar %}
+<!---->
+{% block content %}
+
+<style>
+  .number-range{
+    position: relative;
+    display: block;
+    font-size: 20px;
+    color: #D2AB4B;
+    font-weight: 400;
+  }
+  .custom-card{
+    width: 40rem;
+    /*border-radius: 50px !important;*/
+    border-radius: 5% 20%  5% 20% !important;
+  }
+  input-gral{
+    border: none;
+    border-bottom: 2px solid white; /* Contorno inferior blanco */
+    background-color: #f5f5f5; /* Fondo gris claro */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra debajo */
+    padding: 8px;
+    margin-bottom: 15px;
+    outline: none; /* Quita el contorno al enfocar */
+  }
+
+  .input-range{
+    width: 400px;
+    height: 40px;
+    -webkit-appearance: none;
+    background: #343A40;
+    outline: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: inset 0 0 5px rgba(0,0,0,1);
+
+  }
+
+  .input-range::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 10px;
+    height: 70px;
+    
+    background: #D2AB4B;
+    cursor: pointer;
+    border: 0px solid #343A40;
+    box-shadow: -407px 0 0 400px #D2AB4B;
+
+
+  }
+
+  
+</style>
+
+
+
+  <div class="row mb-4 ">
+    <div class="col">
+      <div class="card mr-5" style="width: 20rem">
+        <!-- <img
+          src="{{user.imagen_perfil.url}}"
+          style="width: 50%"
+          class="card-img-top"
+          alt="..."
+        /> -->
+        <div class="card-body rounded"  style="background-color: #343A40;">
+          <h5 class="card-title" style="color: #D2AB4B;">
+            {{user.first_name | upper}} {{user.last_name | upper}}
+          </h5>
+          <p class="card-text text-white">Correo electrónico : {{user.email}}</p>
+          <p class="card-text text-white">Teléfono celular : {{user.celular}}</p>
+          <!-- <p class="card-text">CURP : {{user.curp}}</p> -->
+          <p class="card-text text-white">RFC : {{user.rfc}}</p>
+          <p class="card-text text-white">Fecha de nacimiento : {{user.fecha_nac}}</p>
+
+          <!-- <p class="card-text">
+            INE: <a href="{{user.documento.url}}" target="_blank">Descargar</a>
+          </p> -->
+
+          <button
+            type="button"
+            class="btn btn-primary d-none"
+            data-toggle="modal"
+            data-target=".bs-example-modal-lg"
+          >
+            migrar
+          </button>
+          <button
+            onclick="abrirModalEdicion()"
+            class="btn btn-primary d-none"
+          >
+          <!--url 'panel_app:actualizar_usuarios' pk=user.pk-->
+            Editar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col ">  
+        <div class="card-body custom-card " style="background-color: #343A40;">
+
+          <h3 style="color: #D2AB4B;" >Simulador de Crédito</h3>
+           
+          <form method="post" id="simulator">
+          {% csrf_token %}
+          <div class="pb-3 text-white ">
+            {{form.tipo_credito.label}}
+            <br>
+            {{form.tipo_credito}}
+          </div>
+
+          <div class="pb-3"><!--color: #999;-->
+            <span id="rangeValue" class="number-range" >0 <span class="fs-6">*deslizate hacia tu dercha o izquierda para definir tu cantidad</span> </span>
+            <!-- <input class="input-range" 
+            type="range" name="" value="0" min="0" max="1000" onchange="rangeSlide(this.value)"
+            onmousemove="rangeSlide(this.value)"> -->
+
+            {{form.amount}}
+          </div>
+          <div class="pb-3 text-white">
+            {{form.plazo_nombre.label}}
+            <br>
+            {{form.plazo_nombre}}
+          </div>
+          <div class="pb-3 d-none">
+            {{form.interest_rate.label}}{{form.interest_rate}}
+          </div>
+           <span id="rangeValueTerm" class="number-range" >0 <span class="fs-6">*deslizate hacia tu dercha o izquierda para definir tu plazo</span> </span>
+          <div class="pb-3">{{form.term}}</div>
+         
+          <button type="submit" class="btn btn-outline-light btn-sm rounded-pill">
+            Calcular
+          </button>
+        </form>
+
+         <div id="result-container " class="mt-3 mb-3">
+          <span id="monthly-payment" class="h3 text-white"></span>
+          <br />
+          <div id="mostrar_boton" class="mt-3 " style="color: #D2AB4B;">
+            <div class="d-grid gap-2 ">
+               <p class="text-center" >Un préstamo confiable es nuestra prioridad</p>
+              <button
+                type="button"
+                class="btn btn-outline-light btn-sm w-25 mx-auto rounded-pill"
+                data-bs-toggle="modal"
+                data-bs-target="#completarRegistroUsuario"
+                onclick="registroModalUser('{% url 'dashboard_app:editar_usuario' pk=user.pk %}')"
+              >
+              <!--url 'panel_app:editar_usuario' pk=user.pk-->
+                Solicitar Crédito
+              </button>
+            </div>
+          </div>
+           
+        </div>
+
+        </div>
+    </div>
+    <div class="col"></div>
+  </div>
+
+  
+<!--completar registro-->
+<div
+  class="modal fade"
+  id="completarRegistroUsuario"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg"></div>
+</div>
+<!--completar registro-->
+
+
+{% endblock content %} {% block extra_js %}
+
+<script>
+  function rangeSlide(value){
+   
+    document.getElementById('rangeValue').innerHTML = value;
+    
+  }
+
+  function rangeSlideTerm(value){
+   
+    document.getElementById('rangeValueTerm').innerHTML = value;
+    
+  }
+</script>
+
+<!-- knob plugin -->
+<script src="{% static 'libs/jquery-knob/jquery.knob.min.js' %}"></script>
+
+<!--Morris Chart-->
+<script src="{% static 'libs/morris.js06/morris.min.js' %}"></script>
+<script src="{% static 'libs/raphael/raphael.min.js' %}"></script>
+
+<!-- Dashboar init js-->
+<script src="{% static 'js/pages/dashboard.init.js' %}"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<script>
+
+
+  function registroModalUser(url) {
+    $("#completarRegistroUsuario").load(url, function () {
+      $(this).modal("show");
+    });
+  }
+
+  $(document).ready(function () {
+    $("#id_tipo_credito").change(function () {
+        var selectedOption = $(this).val();
+        var amountSlider = $("#id_amount");
+
+        amountSlider.val(0);
+       
+        
+        // Actualizar el rango del slider según el tipo de crédito seleccionado
+        if (selectedOption === "1") {  // Ejemplo de tipo de crédito 1
+            amountSlider.val(5000);
+            amountSlider.attr({
+                "min": 5000,
+                "max": 15000,
+                "step": 5000
+            });
+            amountSlider.removeClass('d-none');
+        } else if (selectedOption === "2") {  // Ejemplo de tipo de crédito 2
+          amountSlider.val(20000);
+            amountSlider.attr({
+                "min": 20000,
+                "max": 30000,
+                "step": 5000
+            });
+            amountSlider.removeClass('d-none');
+        }else if (selectedOption === "3") {  // Ejemplo de tipo de crédito 2
+            amountSlider.val(35000);
+            amountSlider.attr({
+                "min": 35000,
+                "max": 45000,
+                "step": 5000
+            });
+            amountSlider.removeClass('d-none');
+        }else if (selectedOption === "4") {  // Ejemplo de tipo de crédito 2
+          amountSlider.val(50000);
+            amountSlider.attr({
+              "min": 50000,
+              "max": 65000,
+              "step": 5000
+               
+            });
+            
+        }
+        
+    });
+
+    $("#id_plazo_nombre").change(function () {
+        let selectedTerm = $(this).val();
+        let termSlider = $("#id_term");
+
+        termSlider.val(0);
+
+        if (selectedTerm === '1') {
+           termSlider.attr({
+                "min": 14,
+                "max": 22,
+                "step": 4
+            });
+            termSlider.removeClass('d-none');
+        }
+        
+      })
+
+  });
+
+  
+  //document.addEventListener("DOMContentLoaded", function () {
+  //  let campo_tipo_credito = document.getElementById("id_tipo_credito");
+  //  let campo_id_amount = document.getElementById("id_amount");
+
+  //  campo_tipo_credito.addEventListener("change", function () {
+  //    let selectedOption = campo_tipo_credito.value;
+  //    console.log("soy tipo credito ", selectedOption);
+  //    campo_id_amount.innerHTML = "";
+
+  //    if (selectedOption === "1") {
+  //      campo_id_amount.options.add(new Option(5000));
+  //      campo_id_amount.options.add(new Option(10000));
+  //      campo_id_amount.options.add(new Option(15000));
+  //      campo_id_amount.options.add(new Option(20000));
+  //    } else if (selectedOption === "2") {
+  //      campo_id_amount.options.add(new Option(25000));
+  //      campo_id_amount.options.add(new Option(30000));
+  //      campo_id_amount.options.add(new Option(35000));
+  //      campo_id_amount.options.add(new Option(40000));
+  //    }else if (selectedOption === "3") {
+  //      campo_id_amount.options.add(new Option(45000));
+  //      campo_id_amount.options.add(new Option(50000));
+  //      campo_id_amount.options.add(new Option(55000));
+  //      campo_id_amount.options.add(new Option(60000));
+  //    }
+  //  });
+  //});
+
+//  document.addEventListener("DOMContentLoaded", function () {
+//    let campo_plazo = document.getElementById("id_plazo_nombre");
+//    let campo_interes_credito = document.getElementById("id_term");
+
+//    campo_plazo.addEventListener("change", function () {
+//      let selectedOption = campo_plazo.value;
+//      console.log("soy tipo credito ", selectedOption);
+//      campo_interes_credito.innerHTML = "";
+
+//      if (selectedOption === "1") {
+//        campo_interes_credito.options.add(new Option(14));
+//        campo_interes_credito.options.add(new Option(18));
+//        campo_interes_credito.options.add(new Option(22));
+//      } else if (selectedOption === "2") {
+//        campo_interes_credito.options.add(new Option(3));
+//        campo_interes_credito.options.add(new Option(4));
+//        campo_interes_credito.options.add(new Option(5));
+//      }
+//    });
+//  });
+ 
+$(document).ready(function () {
+
+  
+  $("#id_plazo_nombre").change(function () {
+      var selectedProduct = $(this).val();
+      if (selectedProduct) {
+        // Realiza una solicitud AJAX al servidor para obtener el interés del producto seleccionado
+        $.ajax({
+          url: "{% url 'dashboard_app:obtener_interes' %}", // Reemplaza con la URL correcta
+          data: {
+            product_id: selectedProduct,
+          },
+          success: function (data) {
+            // Rellena el campo interest_rate con el valor recibido
+            $("#id_interest_rate").val(data.interest);
+          },
+        });
+      } else {
+        // Borra el campo interest_rate si no hay selección
+        $("#id_interest_rate").val("");
+      }
+    });
+
+    $("#mostrar_boton").hide();
+    $("#simulator").on("submit", function (event) {
+      event.preventDefault(); // Evita el envío normal del formulario
+
+      // Obtén los valores de los campos
+      var amountValue = $("#id_amount").val();
+      var interestRateValue = $("#id_interest_rate").val();
+      var termValue = $("#id_term").val();
+
+      // Verifica si los campos necesarios están llenos
+      if (amountValue === "" || interestRateValue === "" || termValue === "") {
+        // Muestra un mensaje de error
+        alert("Debes llenar todos los campos antes de calcular.");
+
+        // Detén la ejecución
+        return;
+      }
+
+      $.ajax({
+        type: "POST",
+        url: $(this).attr("action"),
+        data: $(this).serialize(),
+        success: function (data) {
+          let monthly_payment_digit = parseFloat(data.monthly_payment).toFixed(
+            2
+          );
+          //let formatNumeric = parseFloat(data.monthly_payment).toLocaleString();
+          // Actualiza el contenido del div con el resultado
+          $("#monthly-payment").text(
+            "Tu pago es: " + " " + "$" + " " + monthly_payment_digit
+          );
+          $("#mostrar_boton").show();
+          console.log("boton mostrado");
+        },
+      });
+    });
+});
+
+    
+
+  
+
+</script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+
+
+
+{% endblock extra_js %}

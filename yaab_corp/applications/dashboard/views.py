@@ -17,9 +17,9 @@ from applications.users.forms import UserChangeForm
 # Create your views here.from django.views.generic.base import TemplateView
 
 class DashboardView(CreateView):
-    template_name="dashboard/index.html"
+    template_name="index.html"
     form_class = SimuladorForm
-    success_url = reverse_lazy('dashboard_app:index')
+    success_url = reverse_lazy('index')
     
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
@@ -147,7 +147,7 @@ class EditarUsuarioUsers(UpdateView):
     model = User
     template_name = 'dashboard/registro-usuario/completar-registro.html'
     form_class = UserChangeForm
-    success_url = reverse_lazy('dashboard_app:index')
+    success_url = reverse_lazy('index')
     
 class TerminosCondiciones(TemplateView):
     template_name = 'dashboard/terminos-condiciones.html'
