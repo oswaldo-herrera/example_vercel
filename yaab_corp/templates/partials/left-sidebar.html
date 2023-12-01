@@ -1,0 +1,141 @@
+{% load static %}
+
+<style>
+  .texto-blanco {
+    color: #c5c9cd;
+  }
+
+  .texto-blanco:hover {
+    color: #ffffff;
+  }
+</style>
+<!-- ========== Left Sidebar Start ========== -->
+<div class="left-side-menu">
+  <div class="h-100" data-simplebar>
+    <!-- User box -->
+    <div class="user-box text-center mb-3">
+      <img
+        src="{% static 'images/landing/yaab_corp.png' %}"
+        alt="user-img"
+        title="Mat Helme"
+        class="rounded-circle img-thumbnail avatar-md"
+      />
+      <div class="dropdown ">
+        <a
+          href="#"
+          class="user-name dropdown-toggle h5 mt-2 mb-1 d-block"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          >{{user.first_name}} {{user.last_name}}</a
+        >
+        <div class="dropdown-menu user-pro-dropdown">
+          <!-- item-->
+          <a href="javascript:void(0);" class="dropdown-item notify-item">
+            <i class="fe-user me-1"></i>
+            <span>My Account</span>
+          </a>
+
+          <!-- item-->
+          <a href="javascript:void(0);" class="dropdown-item notify-item">
+            <i class="fe-settings me-1"></i>
+            <span>Settings</span>
+          </a>
+
+          <!-- item-->
+          <a href="javascript:void(0);" class="dropdown-item notify-item">
+            <i class="fe-lock me-1"></i>
+            <span>Lock Screen</span>
+          </a>
+
+          <!-- item-->
+          <a href="javascript:void(0);" class="dropdown-item notify-item">
+            <i class="fe-log-out me-1"></i>
+            <span>Logout</span>
+          </a>
+        </div>
+      </div>
+
+      <p class="text-muted left-user-info">{{user.rfc}}</p>
+
+      <ul class="list-inline d-none">
+        <li class="list-inline-item">
+          <a href="#" class="text-muted left-user-info">
+            <i class="mdi mdi-cog"></i>
+          </a>
+        </li>
+
+        <li class="list-inline-item">
+          <a href="#">
+            <i class="mdi mdi-power"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!--- Sidemenu -->
+    <div id="sidebar-menu">
+      <ul id="side-menu">
+        <li class="menu-title">Panel de administración</li>
+
+        <li>
+          <a href="{% url 'dashboard_app:index' %}">
+            <!-- <iconify-icon icon="mdi:view-dashboard"></iconify-icon> -->
+            <i class="mdi mdi-view-dashboard" style="color: #ffff"></i>
+            <!-- <span class="badge rounded-pill float-end">9+</span> -->
+            <span class="texto-blanco"> Inicio </span>
+          </a>
+        </li>
+
+        <li class="menu-title mt-2">Administrativo</li>
+
+        <li>
+          <a href="#sideBarAdministrativo" data-bs-toggle="collapse">
+            <i class="mdi mdi-folder-account" style="color: #ffff"></i>
+            <span class="texto-blanco"> Áreas </span>
+            <span class="menu-arrow" style="color: #ffff"></span>
+          </a>
+          <div class="collapse" id="sideBarAdministrativo">
+            <ul class="nav-second-level">
+              <li>
+                <!--url 'inbox'-->
+                <a href="{% url 'dashboard_app:productos_gral' %}">
+                  <span class="texto-blanco">Alta de productos</span>
+                </a>
+              </li>
+              <li>
+                <!--url 'templates'-->
+                <a href="{% url 'user_app:lista_usuarios' %}"> <span class="texto-blanco">Usuarios</span></a>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="menu-title mt-2">General usuarios</li>
+
+        <li>
+          <a href="#sidebarUsuarios" data-bs-toggle="collapse">
+            <i class="mdi mdi-account-star" style="color: #ffff"></i>
+            <span class="texto-blanco"> Opciones </span>
+            <span class="menu-arrow" style="color: #ffff"></span>
+          </a>
+          <div class="collapse" id="sidebarUsuarios">
+            <ul class="nav-second-level">
+              <li>
+                <!--url 'inbox'-->
+                <a href="{%url 'dashboard_app:preguntas_respuestas'%}">
+                  <span class="texto-blanco">Preguntas y repuestas</span>
+                </a>
+              </li>
+              
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <!-- End Sidebar -->
+
+    <div class="clearfix"></div>
+  </div>
+  <!-- Sidebar -left -->
+</div>
+<!-- Left Sidebar End -->
